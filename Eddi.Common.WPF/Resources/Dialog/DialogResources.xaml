@@ -6,52 +6,7 @@
                     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:dialog="clr-namespace:Eddi.Common.WPF.Services.Dialog"
                     xmlns:converter="clr-namespace:Eddi.Common.WPF.Converter"
+                    xmlns:dataTemplateSelectors="clr-namespace:Eddi.Common.WPF.DataTemplateSelectors"
                     mc:Ignorable="d">
-    <resources:ModuleResourcesDataTemplateSelector x:Key="ViewDataTemplateSelector" />
-<!--Do not change the NAME. this is referenced by the DialogService directly!-->
-            <DataTemplate x:Key="DialogDefaultDataTemplate" DataType="{x:Type dialog:DialogViewModelBase}">
-                <Border BorderThickness="1" 
-                        CornerRadius="1"
-                        HorizontalAlignment="Stretch">
-                    <DockPanel Margin="5"
-                           HorizontalAlignment="Stretch">
-                        <DockPanel.Resources>
-                            <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-                        </DockPanel.Resources>
-                        <ItemsControl DockPanel.Dock="Bottom"
-                                  Margin="0,15,0,0"
-                                  ItemsSource="{Binding Commands}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <DockPanel IsItemsHost="True" LastChildFill="False"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style TargetType="{x:Type ContentPresenter}">
-                                    <Setter Property="DockPanel.Dock" Value="{Binding Position}"/>
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type dialog:DialogCommand}">
-                                    <Button Content="{Binding Content}"
-                                            Command="{Binding}"
-                                            FontSize="17"
-                                            Margin="0,0,5,0"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <ContentControl 
-                        DockPanel.Dock="Bottom" 
-                        HorizontalAlignment="Stretch"
-                        IsEnabled="{Binding IsNotWorking}"
-                        ContentTemplateSelector="{StaticResource ViewDataTemplateSelector}"
-                        Content="{Binding}">
-                            <b:Interaction.Behaviors>
-                                <control:DeferredFocusIsWorkingBehavior />
-                            </b:Interaction.Behaviors>
-                        </ContentControl>
-                    </DockPanel>
-                </Border>
-            </DataTemplate>
+  
 </ResourceDictionary>

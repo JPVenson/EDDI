@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
 using JPB.WPFToolsAwesome.Error;
@@ -18,16 +19,19 @@ namespace Eddi.Common.WPF.Services.Dialog
 		DelegateCommand CloseDialogCommand { get; }
 
 		void OnDisplay();
+		void OnClosed();
+
+		bool IsModalDialog { get; }
 	}
 
-	
+
 	public class DialogViewModelBase : DialogViewModelBase<NoErrors>
 	{
-		
+
 	}
 
-	public class DialogViewModelBase<TErrors> : AsyncErrorProviderBase<TErrors>, 
-		IDialogViewModel 
+	public class DialogViewModelBase<TErrors> : AsyncErrorProviderBase<TErrors>,
+		IDialogViewModel
 		where TErrors : IErrorCollectionBase, new()
 	{
 		public DialogViewModelBase()
@@ -39,9 +43,10 @@ namespace Eddi.Common.WPF.Services.Dialog
 			Commands.Add(DefaultAbortCommand = new DialogCommand(abortCommand)
 			{
 				Content = "Abort",//TODO Needs Localization
-				KeyBinding = Key.Escape,    
+				KeyBinding = Key.Escape,
 				Position = Dock.Right
 			});
+			IsModalDialog = true;
 		}
 
 		public DialogCommand DefaultAbortCommand { get; set; }
@@ -54,8 +59,17 @@ namespace Eddi.Common.WPF.Services.Dialog
 		public DelegateCommand CloseDialogCommand { get; private set; }
 		public virtual void OnDisplay()
 		{
-			
+
 		}
+
+		public virtual void OnClosed()
+		{
+			Closed?.Invoke(this, EventArgs.Empty);
+		}
+
+		public event EventHandler Closed;
+
+		public bool IsModalDialog { get; protected set; }
 
 		protected virtual void AbortExecute()
 		{

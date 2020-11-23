@@ -14,7 +14,7 @@
         <DockPanel LastChildFill="True">
             <WebBrowser>
                 <b:Interaction.Behaviors>
-                    <webBrowser:BrowserBehavior Html="{Binding HtmlCode}"/>
+                    <webBrowser:BrowserBehavior HtmlCode="{Binding HtmlCode}"/>
                 </b:Interaction.Behaviors>
             </WebBrowser>
         </DockPanel>

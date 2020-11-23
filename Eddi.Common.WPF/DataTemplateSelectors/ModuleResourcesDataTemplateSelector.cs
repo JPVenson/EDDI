@@ -40,7 +40,7 @@ namespace Eddi.Common.WPF.DataTemplateSelectors
 			if (tryFindResource == null)
 			{
 				var resourceDictionary = new ResourceDictionary();
-				resourceDictionary.Source = new Uri(cacheKey);
+				resourceDictionary.Source = new Uri(cacheKey, UriKind.RelativeOrAbsolute);
 				var dataTemplate = resourceDictionary[dataTemplateKey] as DataTemplate;
 				PreloadNavigationResourceUiService.DataTemplatesSource.Add(cacheKey, resourceDictionary);
 				return dataTemplate;

@@ -154,7 +154,14 @@ namespace EddiSpeechResponder.ViewModel
 
 			PropertyChanged += OnPropertyChanged;
 			IoC.Resolve<IDialogService>().ShowDialog(diffViewModel);
-			PropertyChanged -= OnPropertyChanged;
+
+			void OnDiffViewModelOnClosed(object o, EventArgs args)
+			{
+				PropertyChanged -= OnPropertyChanged;
+				diffViewModel.Closed -= OnDiffViewModelOnClosed;
+			}
+
+			diffViewModel.Closed += OnDiffViewModelOnClosed;
 		}
 
 		private bool CanCompareScriptContentExecute(object sender)

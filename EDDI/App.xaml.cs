@@ -1,9 +1,12 @@
 ﻿using EddiCore;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,11 +37,29 @@ namespace Eddi
 
 			IoC.Init(new UnityContainer());
 
-			foreach (var moduleType in AppDomain.CurrentDomain.GetAssemblies()
-				.SelectMany(f => f.GetTypes()).Where(e => e.IsClass && typeof(IModule).IsAssignableFrom(e)))
+			var loadCache = new Dictionary<Type, IModule>();
+			void LoadModulesFromAssembly(Assembly assembly)
 			{
-				var module = Activator.CreateInstance(moduleType) as IModule;
-				module.Start();
+				var modules = assembly.GetTypes()
+					.Where(e => e.IsClass && !e.IsAbstract && typeof(IModule).IsAssignableFrom(e));
+
+				foreach (var moduleType in modules.Where(e => !loadCache.ContainsKey(e)))
+				{
+					loadCache[moduleType] = null;
+					var module = Activator.CreateInstance(moduleType) as IModule;
+					module.Start();
+					loadCache[moduleType] = module;
+				}
+			}
+			
+			AppDomain.CurrentDomain.AssemblyLoad += (sender, args) =>
+			{
+				LoadModulesFromAssembly(args.LoadedAssembly);
+			};
+
+			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+			{
+				LoadModulesFromAssembly(assembly);
 			}
 
 			App app = new App();
@@ -57,7 +78,8 @@ namespace Eddi
 				// We are too old to continue; initialize in a "safe mode". 
 				EDDI.Init(true);
 			}
-
+			
+			app.InitializeComponent();
 			if (FromVA)
 			{
 				// Start with the MainWindow hidden

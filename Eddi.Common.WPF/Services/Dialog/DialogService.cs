@@ -20,6 +20,16 @@ namespace Eddi.Common.WPF.Services.Dialog
 
 		public TDialog ShowDialog<TDialog>(TDialog dialogViewModel) where TDialog : IDialogViewModel
 		{
+			return Show(dialogViewModel, dialogViewModel.IsModalDialog);
+		}
+
+		public TDialog Show<TDialog>(TDialog dialogViewModel) where TDialog : IDialogViewModel
+		{
+			return Show(dialogViewModel, false);
+		}
+
+		public TDialog Show<TDialog>(TDialog dialogViewModel, bool modal) where TDialog : IDialogViewModel
+		{
 			WpfActorHelper.ViewModelAction(() =>
 			{
 				var title = dialogViewModel.Title;
@@ -47,13 +57,22 @@ namespace Eddi.Common.WPF.Services.Dialog
 				}
 
 				currentDialog.SizeToContent = SizeToContent.WidthAndHeight;
+				currentDialog.Width = 500;
+				currentDialog.Height = 600;
 				currentDialog.ContentTemplate = Application.Current
 					.FindResource("DialogDefaultDataTemplate") as DataTemplate;
 				currentDialog.Content = dialogViewModel;
 				currentDialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 				dialogViewModel.OnDisplay();
 				_dialogs.Add(currentDialog);
-				currentDialog.ShowDialog();
+				if (modal)
+				{
+					currentDialog.ShowDialog();
+				}
+				else
+				{
+					currentDialog.Show();
+				}
 			});
 
 			return dialogViewModel;
@@ -65,10 +84,15 @@ namespace Eddi.Common.WPF.Services.Dialog
 			{
 				if (_dialogs.Count != 0)
 				{
-					var currentDialog = dialogViewModel != null ? (_dialogs.First(e => e.DataContext == dialogViewModel)) : (_dialogs.Last());
+					var currentDialog = dialogViewModel != null ? (_dialogs.First(e => e.Content == dialogViewModel)) : (_dialogs.Last());
 					if (currentDialog != null)
 					{
-						currentDialog.DialogResult = result;
+						if (dialogViewModel.IsModalDialog)
+						{
+							currentDialog.DialogResult = result;
+						}
+
+						(currentDialog.Content as IDialogViewModel).OnClosed();
 						currentDialog.Close();
 					}
 

@@ -4,35 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Xaml.Behaviors;
 
 namespace EddiSpeechResponder.Behaviors.WebBrowser
 {
-	public class BrowserBehavior
+	public class BrowserBehavior : Behavior<System.Windows.Controls.WebBrowser>
 	{
-		public static readonly DependencyProperty HtmlProperty = DependencyProperty.RegisterAttached(
-			"Html",
-			typeof(string),
-			typeof(BrowserBehavior),
-			new FrameworkPropertyMetadata(OnHtmlChanged));
+		public static readonly DependencyProperty HtmlCodeProperty = DependencyProperty.Register(
+			nameof(HtmlCode), typeof(string), typeof(BrowserBehavior), new FrameworkPropertyMetadata(default(string), PropertyChangedCallback) { BindsTwoWayByDefault = true });
 
-		[AttachedPropertyBrowsableForType(typeof(System.Windows.Controls.WebBrowser))]
-		public static string GetHtml(System.Windows.Controls.WebBrowser d)
+		private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			return (string)d.GetValue(HtmlProperty);
+			(d as BrowserBehavior).SetCode(e.NewValue as string);
 		}
 
-		public static void SetHtml(System.Windows.Controls.WebBrowser d, string value)
+		private void SetCode(string eNewValue)
 		{
-			d.SetValue(HtmlProperty, value);
-		}
-
-		static void OnHtmlChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-		{
-			System.Windows.Controls.WebBrowser webBrowser = dependencyObject as System.Windows.Controls.WebBrowser;
-			if (webBrowser != null)
+			if (AssociatedObject != null)
 			{
-				webBrowser.NavigateToString(e.NewValue as string ?? "&nbsp;");
+				AssociatedObject.NavigateToString(eNewValue as string ?? "&nbsp;");
 			}
+		}
+
+		public string HtmlCode
+		{
+			get { return (string)GetValue(HtmlCodeProperty); }
+			set { SetValue(HtmlCodeProperty, value); }
+		}
+
+		protected override void OnAttached()
+		{
+			SetCode(HtmlCode);
 		}
 	}
 }

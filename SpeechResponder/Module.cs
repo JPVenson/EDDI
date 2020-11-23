@@ -18,9 +18,7 @@ namespace EddiSpeechResponder
 
 		public override IEnumerable<Uri> Resources()
 		{
-			yield return CreateAssemblyDictionary("/Resources/EditScriptResources.xaml");
-			yield return CreateAssemblyDictionary("/Resources/MarkdownDisplayResources.xaml");
-			yield return CreateAssemblyDictionary("/Resources/ScriptCompareResources.xaml");
+			yield return CreateModuleResourcesDictionary();
 		}
 	}
 }

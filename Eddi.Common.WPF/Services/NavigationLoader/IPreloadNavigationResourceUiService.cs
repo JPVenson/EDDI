@@ -14,6 +14,7 @@ namespace Eddi.Common.WPF.Services.NavigationLoader
 	{
 		IDictionary<string, ResourceDictionary> DataTemplatesSource { get; }
 	}
+
 	public class PreloadNavigationResourceUiServiceService : IPreloadNavigationResourceUiService
 	{
 		public PreloadNavigationResourceUiServiceService()

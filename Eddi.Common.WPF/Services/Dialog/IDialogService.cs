@@ -8,6 +8,7 @@ namespace Eddi.Common.WPF.Services.Dialog
 	public interface IDialogService
 	{
 		TDialog ShowDialog<TDialog>(TDialog dialogViewModel) where TDialog : IDialogViewModel;
+		TDialog Show<TDialog>(TDialog dialogViewModel) where TDialog : IDialogViewModel;
 		void CloseDialog(bool? result, IDialogViewModel dialogViewModel);
 	}
 }

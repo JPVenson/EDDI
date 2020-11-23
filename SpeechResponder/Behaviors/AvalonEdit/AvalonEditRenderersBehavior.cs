@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.Xaml.Behaviors;
@@ -21,11 +22,12 @@ namespace EddiSpeechResponder.Behaviors.AvalonEdit
 		protected override void OnAttached()
 		{
 			base.OnAttached();
-			BackgroundRenderes.CollectionChanged -= BackgroundRenderes_CollectionChanged;
-			BackgroundRenderes.CollectionChanged += BackgroundRenderes_CollectionChanged;
-			foreach (var backgroundRenderer in BackgroundRenderes)
+			if (BackgroundRenderes != null)
 			{
-				AssociatedObject.TextArea.TextView.BackgroundRenderers.Add(backgroundRenderer);
+				foreach (var backgroundRenderer in BackgroundRenderes)
+				{
+					AssociatedObject.TextArea.TextView.BackgroundRenderers.Add(backgroundRenderer);
+				}
 			}
 		}
 
@@ -47,6 +49,44 @@ namespace EddiSpeechResponder.Behaviors.AvalonEdit
 			}
 		}
 
-		public ObservableCollection<IBackgroundRenderer> BackgroundRenderes { get; set; }
+		public static readonly DependencyProperty BackgroundRenderesProperty = DependencyProperty.Register(
+			nameof(BackgroundRenderes), typeof(ObservableCollection<IBackgroundRenderer>), typeof(AvalonEditRenderersBehavior),
+			new PropertyMetadata(default(ObservableCollection<IBackgroundRenderer>), RenderesChanged));
+
+		private static void RenderesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			(d as AvalonEditRenderersBehavior).RenderesCollectionChanged(
+				e.OldValue as ObservableCollection<IBackgroundRenderer>, e.NewValue as ObservableCollection<IBackgroundRenderer>);
+		}
+
+		private void RenderesCollectionChanged(ObservableCollection<IBackgroundRenderer> eOldValue, ObservableCollection<IBackgroundRenderer> eNewValue)
+		{
+			if (AssociatedObject == null)
+			{
+				return;
+			}
+
+			if (eOldValue != null)
+			{
+				eOldValue.CollectionChanged -= BackgroundRenderes_CollectionChanged;
+			}
+
+			if (eNewValue == null)
+			{
+				return;
+			}
+			eNewValue.CollectionChanged -= BackgroundRenderes_CollectionChanged;
+			eNewValue.CollectionChanged += BackgroundRenderes_CollectionChanged;
+			foreach (var backgroundRenderer in eNewValue)
+			{
+				AssociatedObject.TextArea.TextView.BackgroundRenderers.Add(backgroundRenderer);
+			}
+		}
+
+		public ObservableCollection<IBackgroundRenderer> BackgroundRenderes
+		{
+			get { return (ObservableCollection<IBackgroundRenderer>) GetValue(BackgroundRenderesProperty); }
+			set { SetValue(BackgroundRenderesProperty, value); }
+		}
 	}
 }

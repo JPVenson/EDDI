@@ -24,6 +24,9 @@ namespace EddiSpeechResponder.ViewModel
 			_getCurrentScript = getCurrentScript;
 			base.Title = Properties.SpeechResponder.compare_script_title;
 			_diffHighlighter = new DiffHighlighter();
+			Renderers = new ObservableCollection<IBackgroundRenderer>();
+			Renderers.Add(_diffHighlighter);
+			base.IsModalDialog = false;
 		}
 
 		public ObservableCollection<IBackgroundRenderer> Renderers { get; set; }
