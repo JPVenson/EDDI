@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:local="clr-namespace:EddiSpeechResponder"
+                    xmlns:resx="clr-namespace:EddiSpeechResponder.Properties"
+                    xmlns:viewModel="clr-namespace:EddiSpeechResponder.ViewModel"
+                    xmlns:avalonEdit1="clr-namespace:EddiSpeechResponder.Behaviors.AvalonEdit"
+                    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:webBrowser="clr-namespace:EddiSpeechResponder.Behaviors.WebBrowser"
+                    mc:Ignorable="d">
+    <DataTemplate DataType="{x:Type viewModel:DisplayMarkdownDialogViewModel}">
+        <DockPanel LastChildFill="True">
+            <WebBrowser>
+                <b:Interaction.Behaviors>
+                    <webBrowser:BrowserBehavior Html="{Binding HtmlCode}"/>
+                </b:Interaction.Behaviors>
+            </WebBrowser>
+        </DockPanel>
+    </DataTemplate>
+</ResourceDictionary>

@@ -59,6 +59,15 @@
     <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.6.0.0\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations, Version=2020.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.2020.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="JPB.WPFToolsAwesome, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFToolsAwesome.2.0.0\lib\net48\JPB.WPFToolsAwesome.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -68,6 +77,10 @@
     <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.4.7.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Speech" />
@@ -82,13 +95,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\AvalonEdit\AvalonEditBehavior.cs" />
+    <Compile Include="Behaviors\AvalonEdit\AvalonEditRenderersBehavior.cs" />
+    <Compile Include="Behaviors\WebBrowser\WebBrowserBehavior.cs" />
     <Compile Include="CopyPersonalityWindow.xaml.cs">
       <DependentUpon>CopyPersonalityWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="CottleHighlightingDefinition.cs" />
-    <Compile Include="MarkdownWindow.xaml.cs">
-      <DependentUpon>MarkdownWindow.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Module.cs" />
     <Compile Include="Properties\SpeechResponder.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -100,14 +114,11 @@
       <DependentUpon>Tooltips.resx</DependentUpon>
     </Compile>
     <Compile Include="Service\ScriptRecoveryService.cs" />
-    <Compile Include="ShowDiffWindow.xaml.cs">
-      <DependentUpon>ShowDiffWindow.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ViewModel\DisplayMarkdownDialogViewModel.cs" />
+    <Compile Include="ViewModel\EditScriptDialogViewModel.cs" />
+    <Compile Include="ViewModel\ScriptCompareViewModel.cs" />
     <Compile Include="ViewScriptWindow.xaml.cs">
       <DependentUpon>ViewScriptWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditScriptWindow.xaml.cs">
-      <DependentUpon>EditScriptWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Personality.cs" />
     <Compile Include="SpeechResponderConfiguration.cs" />
@@ -138,6 +149,10 @@
     <ProjectReference Include="..\CrimeMonitor\EddiCrimeMonitor.csproj">
       <Project>{5b11d1b2-6128-4f2b-8ef3-8168089c5ec9}</Project>
       <Name>EddiCrimeMonitor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Eddi.Common.WPF\Eddi.Common.WPF.csproj">
+      <Project>{8826EA72-40E5-479C-950A-28DD309D1999}</Project>
+      <Name>Eddi.Common.WPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\EddiInaraService\EddiInaraService.csproj">
       <Project>{19AB6841-AA93-4D23-BE6D-4CB6883CDF62}</Project>
@@ -214,6 +229,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tooltips.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="eddi.de.json" />
     <None Include="eddi.es.json" />
     <None Include="eddi.fr.json" />
@@ -240,11 +256,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MarkdownWindow.xaml">
+    <Page Include="Resources\ScriptCompareResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ShowDiffWindow.xaml">
+    <Page Include="Resources\MarkdownDisplayResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -252,7 +268,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="EditScriptWindow.xaml">
+    <Page Include="Resources\EditScriptResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

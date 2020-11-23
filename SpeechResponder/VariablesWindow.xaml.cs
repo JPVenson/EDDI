@@ -30,26 +30,7 @@ namespace EddiSpeechResponder
                 markdown = "";
             }
 
-            if (Events.DESCRIPTIONS.TryGetValue(scriptName, out string description))
-            {
-                // The user is editing an event, add event-specific information
-                markdown += "\n\n## " + scriptName + " event\n\n" + description + ".\n\n";
-                if (Events.VARIABLES.TryGetValue(scriptName, out IDictionary<string, string> variables))
-                {
-                    if (variables.Count == 0)
-                    {
-                        markdown += "This event has no variables.";
-                    }
-                    else
-                    {
-                        markdown += "Information about this event is available under the `event` object.  Note that these variables are only valid for this particular script; other scripts triggered by different events will have different variables available to them.\n\n";
-                        foreach (KeyValuePair<string, string> variable in Events.VARIABLES[scriptName])
-                        {
-                            markdown += "    - " + variable.Key + " " + variable.Value + "\n";
-                        }
-                    }
-                }
-            }
+           
 
             string html = CommonMark.CommonMarkConverter.Convert(markdown);
             html = "<head>  <meta charset=\"UTF-8\"> </head> " + html;
